@@ -251,8 +251,8 @@ logoutBtn.addEventListener('click', function(e) {
 async function fetchMoviesFromAPI() {
     try {
         console.log("جاري جلب الأفلام من السيرفر...");
-        // الاتصال بالبروكسي المحلي لجلب أحدث الأفلام
-        const response = await fetch("http://localhost:3000/api/get-movies");
+        // الاتصال بالبروكسي المرفوع على الإنترنت لجلب أحدث الأفلام
+        const response = await fetch("https://iraq-proxy.onrender.com/api/get-movies");
         const json = await response.json();
         
         if (json && json.data && json.data.list) {
@@ -740,8 +740,8 @@ async function playVideo(movieId = null) {
     try {
         console.log("جاري الاتصال بسيرفر البروكسي لجلب الفيديو...");
         
-        // الاتصال بالسيرفر الوسيط (البروكسي) الذي أنشأناه
-        const response = await fetch(`http://localhost:3000/api/get-video?subjectId=${subjectId}&se=1&ep=1`);
+        // الاتصال بالسيرفر الوسيط (البروكسي المرفوع)
+        const response = await fetch(`https://iraq-proxy.onrender.com/api/get-video?subjectId=${subjectId}&se=1&ep=1`);
         const data = await response.json();
         
         // طباعة البيانات في الكونسول لنعرف مسار رابط الفيديو بدقة
