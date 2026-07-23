@@ -280,7 +280,8 @@ async function fetchMoviesFromAPI() {
             console.log("تم تحديث قائمة الأفلام:", moviesData);
             
             // إعادة رسم الواجهة
-            loadCategory('home');
+            initHome();
+            updateHero();
         }
     } catch (error) {
         console.error("حدث خطأ أثناء جلب قائمة الأفلام:", error);
