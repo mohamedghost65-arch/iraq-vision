@@ -269,7 +269,9 @@ async function fetchMoviesFromAPI() {
                     year: m.releaseDate ? m.releaseDate.substring(0, 4) : "2024",
                     rating: m.imdbRatingValue ? `${m.imdbRatingValue}/10` : "+16",
                     category: "أفلام", // يمكنك تحديثه برمجياً لو توفر
-                    tags: m.genre ? m.genre.split(',') : ["دراما"]
+                    tags: m.genre ? m.genre.split(',') : ["دراما"],
+                    isNew: true,
+                    isTrending: true
                 };
             });
             
@@ -366,7 +368,7 @@ document.querySelectorAll('.nav-item').forEach(link => {
 // إنشاء كارد الفيلم كـ HTML
 function createMovieCard(movie) {
     return `
-        <div class="movie-card reveal" onclick="openMovieDetails(${movie.id})">
+        <div class="movie-card reveal" onclick="openMovieDetails('${movie.id}')">
             <div class="movie-card-img-wrapper">
                 <img src="${movie.image}" alt="${movie.title}">
                 <div class="movie-card-overlay custom-hover-overlay">
@@ -396,7 +398,7 @@ function createMovieCard(movie) {
 
 function createCircularMovieCard(movie) {
     return `
-        <div class="circular-movie-card reveal" onclick="openMovieDetails(${movie.id})">
+        <div class="circular-movie-card reveal" onclick="openMovieDetails('${movie.id}')">
             <div class="circular-img-wrapper">
                 <img src="${movie.image}" alt="${movie.title}">
             </div>
@@ -406,7 +408,7 @@ function createCircularMovieCard(movie) {
 
 function createTop10Card(movie, index) {
     return `
-        <div class="top-10-card reveal" onclick="openMovieDetails(${movie.id})">
+        <div class="top-10-card reveal" onclick="openMovieDetails('${movie.id}')">
             <div class="top-10-number">${index + 1}</div>
             <div class="top-10-img-wrapper">
                 <img src="${movie.image}" alt="${movie.title}">
@@ -418,7 +420,7 @@ function createTop10Card(movie, index) {
 function createContinueWatchingCard(movie) {
     const progress = Math.floor(Math.random() * 60) + 20; // 20% to 80%
     return `
-        <div class="movie-card reveal continue-card" onclick="openMovieDetails(${movie.id})" style="position: relative; overflow: hidden;">
+        <div class="movie-card reveal continue-card" onclick="openMovieDetails('${movie.id}')" style="position: relative; overflow: hidden;">
             <div class="movie-card-img-wrapper">
                 <img src="${movie.image}" alt="${movie.title}">
                 <div class="movie-card-overlay">
@@ -624,7 +626,7 @@ searchInput.addEventListener('input', function(e) {
         
         if(results.length > 0) {
             searchSuggestions.innerHTML = results.slice(0, 5).map(m => `
-                <div class="suggestion-item" onclick="openMovieDetails(${m.id}); document.getElementById('search-suggestions').classList.add('hidden');">
+                <div class="suggestion-item" onclick="openMovieDetails('${m.id}'); document.getElementById('search-suggestions').classList.add('hidden');">
                     <img src="${m.image}" class="suggestion-img">
                     <div class="suggestion-info">
                         <div class="suggestion-title">${m.title}</div>
