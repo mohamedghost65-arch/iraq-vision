@@ -255,8 +255,8 @@ async function fetchMoviesFromAPI() {
         const response = await fetch("https://iraq-proxy.onrender.com/api/get-movies");
         const json = await response.json();
         
-        if (json && json.data && json.data.list) {
-            const apiMovies = json.data.list;
+        if (json && json.data && json.data.subjectList) {
+            const apiMovies = json.data.subjectList;
             
             // تحويل البيانات القادمة من الـ API إلى صيغتنا المعتمدة
             const newMoviesData = apiMovies.map(m => {
