@@ -245,6 +245,52 @@ logoutBtn.addEventListener('click', function(e) {
 });
 
 // ==========================================
+// 3. جلب الأفلام من الـ API (MovieBox)
+// ==========================================
+
+async function fetchMoviesFromAPI() {
+    try {
+        console.log("جاري جلب الأفلام من السيرفر...");
+        // الاتصال بالبروكسي المحلي لجلب أحدث الأفلام
+        const response = await fetch("http://localhost:3000/api/get-movies");
+        const json = await response.json();
+        
+        if (json && json.data && json.data.list) {
+            const apiMovies = json.data.list;
+            
+            // تحويل البيانات القادمة من الـ API إلى صيغتنا المعتمدة
+            const newMoviesData = apiMovies.map(m => {
+                return {
+                    id: m.subjectId,
+                    title: m.title,
+                    desc: m.description || m.genre || "فيلم ممتع ومشوق يستحق المشاهدة.",
+                    image: (m.cover && m.cover.url) ? m.cover.url : 'assets/placeholder.jpg',
+                    trailer: "", // الفيديو المباشر سيتكفل به playVideo
+                    year: m.releaseDate ? m.releaseDate.substring(0, 4) : "2024",
+                    rating: m.imdbRatingValue ? `${m.imdbRatingValue}/10` : "+16",
+                    category: "أفلام", // يمكنك تحديثه برمجياً لو توفر
+                    tags: m.genre ? m.genre.split(',') : ["دراما"]
+                };
+            });
+            
+            // تحديث المصفوفة الأصلية
+            moviesData = newMoviesData;
+            console.log("تم تحديث قائمة الأفلام:", moviesData);
+            
+            // إعادة رسم الواجهة
+            loadCategory('home');
+        }
+    } catch (error) {
+        console.error("حدث خطأ أثناء جلب قائمة الأفلام:", error);
+    }
+}
+
+// تنفيذ الجلب عند تحميل الصفحة
+window.addEventListener('DOMContentLoaded', () => {
+    fetchMoviesFromAPI();
+});
+
+// ==========================================
 // 3. التوجيه ومحاكاة الصفحات (SPA Navigation)
 // ==========================================
 function navigate(targetView, categoryName = null) {
@@ -685,13 +731,54 @@ heroDots.forEach((dot, index) => {
 // ==========================================
 let vjsPlayer = null;
 
-function playVideo() {
+async function playVideo(movieId = null) {
+    let subjectId = movieId || "dummy_id"; // في المستقبل ستمرر ID حقيقي للفيلم هنا
+    
+    // إظهار نافذة التحميل أو المشغل
     videoModal.classList.remove('hidden');
-    if (!vjsPlayer) {
-        vjsPlayer = videojs('my-video');
+    
+    try {
+        console.log("جاري الاتصال بسيرفر البروكسي لجلب الفيديو...");
+        
+        // الاتصال بالسيرفر الوسيط (البروكسي) الذي أنشأناه
+        const response = await fetch(`http://localhost:3000/api/get-video?subjectId=${subjectId}&se=1&ep=1`);
+        const data = await response.json();
+        
+        // طباعة البيانات في الكونسول لنعرف مسار رابط الفيديو بدقة
+        console.log("البيانات المستلمة من السيرفر:", data);
+        
+        // البحث عن الرابط المباشر في الرد (محاولة استخراج HLS أو Streams)
+        let videoUrl = "";
+        if (data && data.data) {
+            if (data.data.hls && data.data.hls.length > 0) {
+                videoUrl = data.data.hls[0].url;
+            } else if (data.data.streams && data.data.streams.length > 0) {
+                videoUrl = data.data.streams[0].url;
+            } else if (data.data.dash && data.data.dash.length > 0) {
+                videoUrl = data.data.dash[0].url;
+            }
+        }
+        
+        if (!vjsPlayer) {
+            vjsPlayer = videojs('my-video');
+        }
+        
+        // إذا وجدنا الرابط، نقوم بتحديث المشغل
+        if (videoUrl) {
+            console.log("تم العثور على الرابط المباشر:", videoUrl);
+            vjsPlayer.src({
+                src: videoUrl,
+                type: videoUrl.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'
+            });
+        } else {
+            console.warn("لم يتم العثور على رابط مباشر للفيديو في الرد.");
+        }
+        
+        vjsPlayer.play();
+        
+    } catch (error) {
+        console.error("حدث خطأ أثناء جلب الفيديو:", error);
     }
-    // Automatically play when opened
-    vjsPlayer.play();
 }
 
 function closeVideo() {
