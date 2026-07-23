@@ -285,6 +285,7 @@ async function fetchMoviesFromAPI() {
         }
     } catch (error) {
         console.error("حدث خطأ أثناء جلب قائمة الأفلام:", error);
+        alert("فشل جلب الأفلام: " + error.message);
     }
 }
 
@@ -683,12 +684,12 @@ const heroDesc = document.getElementById('hero-desc');
 const heroDots = document.querySelectorAll('.slider-dot');
 const heroVideo = document.getElementById('hero-video');
 
-const heroMovies = moviesData.filter(m => m.isTrending).slice(0, 3);
 let currentHeroIndex = 0;
 
 function updateHero() {
-    if(heroMovies.length === 0) return;
-    const movie = heroMovies[currentHeroIndex];
+    const heroMoviesList = moviesData.filter(m => m.isTrending).slice(0, 3);
+    if(heroMoviesList.length === 0) return;
+    const movie = heroMoviesList[currentHeroIndex];
     
     if(heroVideo) {
         heroVideo.style.opacity = 0;
