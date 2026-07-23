@@ -707,8 +707,11 @@ function updateHero() {
     heroDesc.textContent = movie.desc;
     
     const heroMyListBtn = document.getElementById('hero-mylist-btn');
+    
     heroMyListBtn.setAttribute('onclick', `toggleMyList(this, ${movie.id})`);
-    updateListBtnVisual(heroMyListBtn, movie.id);
+    if (typeof updateListBtnVisual === 'function') {
+        updateListBtnVisual(heroMyListBtn, movie.id);
+    }
 
     heroDots.forEach((dot, index) => {
         dot.classList.toggle('active', index === currentHeroIndex);
