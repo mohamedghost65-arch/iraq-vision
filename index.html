@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iraq Vision | عراق فيجن</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- استدعاء مكتبة الأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Video.js CSS -->
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+    <link href="https://unpkg.com/@videojs/themes@1/dist/fantasy/index.css" rel="stylesheet" />
+<body>
+    <!-- شاشة التحميل (Loader) -->
+    <div id="page-loader" class="page-loader hidden">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- شاشة تسجيل الدخول -->
+    <div id="login-section" class="auth-container">
+        <div class="auth-box">
+            <h1 class="logo">Iraq <span>Vision</span></h1>
+            <h2>تسجيل الدخول</h2>
+            <form id="login-form">
+                <div class="input-group">
+                    <input type="email" placeholder=" " required id="email">
+                    <label for="email">البريد الإلكتروني</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" placeholder=" " required id="password">
+                    <label for="password">كلمة المرور</label>
+                    <i class="fas fa-eye toggle-password" id="toggle-password"></i>
+                </div>
+                
+                <div class="auth-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="remember">
+                        <span>تذكرني</span>
+                    </label>
+                    <a href="#" class="forgot-password">هل نسيت كلمة المرور؟</a>
+                </div>
+
+                <button type="submit" class="btn-primary" id="login-btn">
+                    <span id="login-text">دخول</span>
+                    <i class="fas fa-spinner fa-spin hidden" id="login-spinner"></i>
+                </button>
+
+                <div class="social-login">
+                    <span class="divider">أو الدخول بواسطة</span>
+                    <div class="social-buttons">
+                        <button type="button" class="btn-social google"><i class="fab fa-google"></i> Google</button>
+                        <button type="button" class="btn-social facebook"><i class="fab fa-facebook-f"></i> Facebook</button>
+                    </div>
+                </div>
+            </form>
+            <p>ليس لديك حساب؟ <a href="#" onclick="showSubscribeSection(); return false;">اشترك الآن</a></p>
+        </div>
+    </div>
+
+    <!-- شاشة الاشتراك (Subscription Flow) -->
+    <div id="subscribe-section" class="auth-container hidden">
+        <div class="auth-box subscribe-box" style="max-width: 600px;">
+            <div class="subscribe-header" style="text-align: center; margin-bottom: 30px;">
+                <h1 class="logo">Iraq <span>Vision</span></h1>
+                <div class="progress-indicator">
+                    <div class="step active" id="step-dot-1">1</div>
+                    <div class="line"></div>
+                    <div class="step" id="step-dot-2">2</div>
+                    <div class="line"></div>
+                    <div class="step" id="step-dot-3">3</div>
+                </div>
+            </div>
+
+            <!-- Step 1: Create Account -->
+            <div id="sub-step-1" class="sub-step active">
+                <h2 style="text-align: center; margin-bottom: 20px;">إنشاء حساب جديد</h2>
+                <form id="register-form">
+                    <div class="input-group">
+                        <input type="text" placeholder=" " required id="reg-name">
+                        <label for="reg-name">الاسم الكامل</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" placeholder=" " required id="reg-email">
+                        <label for="reg-email">البريد الإلكتروني</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" placeholder=" " required id="reg-password">
+                        <label for="reg-password">كلمة المرور</label>
+                        <i class="fas fa-eye toggle-password" id="toggle-reg-password" onclick="togglePasswordVisibility('reg-password', 'toggle-reg-password')"></i>
+                    </div>
+                    <button type="button" class="btn-primary" onclick="goToSubStep(2)" style="margin-top: 20px;">التالي <i class="fas fa-arrow-left"></i></button>
+                    <p style="text-align: center; margin-top: 20px;">لديك حساب بالفعل؟ <a href="#" onclick="showLoginSection(); return false;">تسجيل الدخول</a></p>
+                </form>
+            </div>
+
+            <!-- Step 2: Choose Plan -->
+            <div id="sub-step-2" class="sub-step hidden">
+                <h2 style="text-align: center; margin-bottom: 20px;">اختر باقة الاشتراك</h2>
+                <div class="plans-container">
+                    <div class="plan-card" onclick="selectPlan('basic', this)">
+                        <h3>الأساسية</h3>
+                        <div class="price">5,000<span> د.ع/شهر</span></div>
+                        <ul>
+                            <li>جودة 720p</li>
+                            <li>شاشة واحدة</li>
+                            <li>مكتبة محدودة</li>
+                        </ul>
+                    </div>
+                    <div class="plan-card recommended" onclick="selectPlan('standard', this)">
+                        <div class="badge">الأكثر شيوعاً</div>
+                        <h3>القياسية</h3>
+                        <div class="price">10,000<span> د.ع/شهر</span></div>
+                        <ul>
+                            <li>جودة 1080p</li>
+                            <li>شاشتين</li>
+                            <li>المكتبة الكاملة</li>
+                        </ul>
+                    </div>
+                    <div class="plan-card" onclick="selectPlan('premium', this)">
+                        <h3>المميزة</h3>
+                        <div class="price">15,000<span> د.ع/شهر</span></div>
+                        <ul>
+                            <li>جودة 4K+HDR</li>
+                            <li>4 شاشات</li>
+                            <li>المكتبة الكاملة</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="step-actions">
+                    <button type="button" class="btn-secondary" onclick="goToSubStep(1)">رجوع</button>
+                    <button type="button" class="btn-primary" onclick="goToSubStep(3)">متابعة الدفع</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Payment -->
+            <div id="sub-step-3" class="sub-step hidden">
+                <h2 style="text-align: center; margin-bottom: 20px;">طريقة الدفع</h2>
+                <div class="payment-methods">
+                    <div class="pay-method active" onclick="selectPayment('zaincash', this)">
+                        <img src="https://zaincash.iq/portal/sites/default/files/logo_1.png" alt="ZainCash" style="height: 30px; object-fit: contain; filter: brightness(0) invert(1);">
+                        <span>زين كاش</span>
+                    </div>
+                    <div class="pay-method" onclick="selectPayment('card', this)">
+                        <i class="fas fa-credit-card" style="font-size: 24px;"></i>
+                        <span>بطاقة مصرفية</span>
+                    </div>
+                </div>
+
+                <div id="payment-zaincash" class="payment-form active">
+                    <div style="background: rgba(46, 204, 113, 0.1); border: 1px solid #2ecc71; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+                        <p style="margin-bottom: 10px; color: var(--text-main);">يرجى تحويل مبلغ الاشتراك إلى رقم زين كاش التالي:</p>
+                        <h3 id="display-admin-zain" style="color: #2ecc71; letter-spacing: 2px; font-size: 1.5rem;" dir="ltr">غير متوفر</h3>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" placeholder=" " required id="user-transfer-phone">
+                        <label for="user-transfer-phone">رقم هاتفك الذي قمت بالتحويل منه</label>
+                    </div>
+                </div>
+
+                <div id="payment-card" class="payment-form hidden">
+                    <div style="background: rgba(26, 31, 113, 0.2); border: 1px solid #4a69bd; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+                        <p style="margin-bottom: 10px; color: var(--text-main);">يرجى تحويل مبلغ الاشتراك إلى بطاقة الفيزا/ماستر كارد التالية:</p>
+                        <h3 id="display-admin-visa" style="color: #4a69bd; letter-spacing: 2px; font-size: 1.5rem;" dir="ltr">غير متوفر</h3>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" placeholder=" " required id="user-transfer-name">
+                        <label for="user-transfer-name">اسم صاحب البطاقة المحول منها</label>
+                    </div>
+                </div>
+
+                <div class="step-actions">
+                    <button type="button" class="btn-secondary" onclick="goToSubStep(2)">رجوع</button>
+                    <button type="button" class="btn-primary" onclick="completeSubscription()" id="pay-btn">إتمام الدفع (10,000 د.ع)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- واجهة المنصة الرئيسية (مخفية في البداية) -->
+    <div id="main-platform" class="hidden">
+        
+        <!-- شريط التنقل -->
+        <nav class="navbar" id="navbar">
+            <div class="nav-left">
+                <div class="mobile-menu-btn" id="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <h1 class="logo" style="cursor: pointer;" onclick="navigate('home')">Iraq <span>Vision</span></h1>
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="#" class="nav-item active" data-target="home">الرئيسية</a></li>
+                    <li><a href="#" class="nav-item" data-target="series">مسلسلات</a></li>
+                    <li><a href="#" class="nav-item" data-target="movies">أفلام</a></li>
+                    <li><a href="#" class="nav-item" data-target="kids">أطفال</a></li>
+                    <li><a href="#" class="nav-item" data-target="mylist">قائمتي</a></li>
+                </ul>
+            </div>
+            <div class="user-profile">
+                <div class="search-box">
+                    <input type="text" class="search-input" id="search-input" placeholder="ابحث عن فيلم أو مسلسل...">
+                    <i class="fas fa-search search-icon" id="search-btn"></i>
+                    <div id="search-suggestions" class="search-suggestions hidden">
+                        <!-- Suggestions will be generated here -->
+                    </div>
+                </div>
+                <div class="notifications-container" style="position: relative; cursor: pointer;">
+                    <i class="fas fa-bell" id="notification-icon"></i>
+                    <span class="notification-badge">3</span>
+                    <div class="notifications-dropdown" id="notifications-dropdown">
+                        <div class="notifications-header">
+                            <h4>الإشعارات</h4>
+                            <span class="mark-all-read" onclick="markAllAsRead(event)">تحديد الكل كمقروءة</span>
+                        </div>
+                        <ul id="notifications-list">
+                            <li class="unread">
+                                <img src="https://images.unsplash.com/photo-1616530940355-351fabd9524b?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=100&w=100" alt="Notification">
+                                <div class="notif-content">
+                                    <p>تمت إضافة حلقة جديدة من <strong>Breaking Bad</strong></p>
+                                    <span>منذ ساعتين</span>
+                                </div>
+                                <div class="notif-actions">
+                                    <i class="fas fa-check" onclick="markAsRead(event, this)" title="تحديد كمقروء"></i>
+                                    <i class="fas fa-trash" onclick="deleteNotification(event, this)" title="حذف"></i>
+                                </div>
+                            </li>
+                            <li class="unread">
+                                <img src="https://images.unsplash.com/photo-1574267432553-4b4628081524?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=100&w=100" alt="Notification">
+                                <div class="notif-content">
+                                    <p>فيلم <strong>Inception</strong> متاح الآن للمشاهدة</p>
+                                    <span>منذ 5 ساعات</span>
+                                </div>
+                                <div class="notif-actions">
+                                    <i class="fas fa-check" onclick="markAsRead(event, this)" title="تحديد كمقروء"></i>
+                                    <i class="fas fa-trash" onclick="deleteNotification(event, this)" title="حذف"></i>
+                                </div>
+                            </li>
+                            <li class="unread">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=100&w=100" alt="Notification">
+                                <div class="notif-content">
+                                    <p>شاهد <strong>Matrix</strong> بجودة 4K حصرياً</p>
+                                    <span>منذ يوم واحد</span>
+                                </div>
+                                <div class="notif-actions">
+                                    <i class="fas fa-check" onclick="markAsRead(event, this)" title="تحديد كمقروء"></i>
+                                    <i class="fas fa-trash" onclick="deleteNotification(event, this)" title="حذف"></i>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="profile-dropdown-container">
+                    <div class="user-profile" id="user-menu-btn">
+                        <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Felix" alt="Profile" class="profile-img" id="profile-img">
+                        <i class="fas fa-caret-down"></i>
+                    </div>
+                    <div class="dropdown-menu" id="dropdown-menu">
+                        <ul>
+                            <li><a href="#" onclick="navigate('account')"><i class="fas fa-user"></i> الحساب</a></li>
+                            <li id="admin-panel-link" style="display: none;"><a href="admin.html"><i class="fas fa-chart-line"></i> لوحة التحكم</a></li>
+                            <li><a href="#" onclick="navigate('help')"><i class="far fa-question-circle"></i> مركز المساعدة</a></li>
+                            <hr>
+                            <li><a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- المحتوى الرئيسي (متغير حسب القسم) -->
+        <div id="content-container">
+            
+            <!-- قسم الصفحة الرئيسية (Home View) -->
+            <div id="view-home" class="page-view active">
+                <!-- العرض الرئيسي (Hero Slider) -->
+                <header class="hero-slider" id="hero-slider">
+                    <video id="hero-video" class="hero-background-video" autoplay loop muted playsinline></video>
+                    <div class="hero-overlay"></div>
+                    <!-- الشريحة النشطة ستُدار برمجياً -->
+                    <div class="hero-content" id="hero-content">
+                        <h2 class="movie-title" id="hero-title">حارس بغداد</h2>
+                        <p class="movie-desc" id="hero-desc">في شوارع العاصمة، يكتشف بطلنا سراً قديماً يغير مجرى التاريخ. فيلم حركة وإثارة حصرياً على المنصة.</p>
+                        <div class="hero-buttons">
+                            <button class="btn-primary" onclick="playVideo()"><i class="fas fa-play"></i> تشغيل</button>
+                            <button class="btn-secondary" id="hero-mylist-btn" onclick="toggleMyList(this)"><i class="fas fa-plus"></i> قائمتي</button>
+                        </div>
+                    </div>
+                    <div class="slider-controls">
+                        <div class="slider-dot active"></div>
+                        <div class="slider-dot"></div>
+                        <div class="slider-dot"></div>
+                    </div>
+                </header>
+
+                <main class="main-content">
+                    <section class="genres-slider-section">
+                        <div class="slider-wrapper">
+                            <button class="scroll-btn right-btn" onclick="scrollRow('row-genres', 1)"><i class="fas fa-chevron-right"></i></button>
+                            <div class="genres-row" id="row-genres">
+                                <!-- سيتم تعبئتها بواسطة JS -->
+                            </div>
+                            <button class="scroll-btn left-btn" onclick="scrollRow('row-genres', -1)"><i class="fas fa-chevron-left"></i></button>
+                        </div>
+                    </section>
+                    <section class="movies-slider">
+                        <h3>أكمل المشاهدة لـ Mario</h3>
+                        <div class="slider-wrapper">
+                            <button class="scroll-btn right-btn" onclick="scrollRow('row-continue', 1)"><i class="fas fa-chevron-right"></i></button>
+                            <div class="movie-row" id="row-continue">
+                                <!-- سيتم تعبئتها بواسطة JS -->
+                            </div>
+                            <button class="scroll-btn left-btn" onclick="scrollRow('row-continue', -1)"><i class="fas fa-chevron-left"></i></button>
+                        </div>
+                    </section>
+                    <section class="movies-slider">
+                        <h3>أفلام يجب مشاهدتها</h3>
+                        <div class="slider-wrapper">
+                            <button class="scroll-btn right-btn" onclick="scrollRow('row-must-watch', 1)"><i class="fas fa-chevron-right"></i></button>
+                            <div class="movie-row circular-row" id="row-must-watch">
+                                <!-- سيتم تعبئتها بواسطة JS -->
+                            </div>
+                            <button class="scroll-btn left-btn" onclick="scrollRow('row-must-watch', -1)"><i class="fas fa-chevron-left"></i></button>
+                        </div>
+                    </section>
+                    <section class="movies-slider">
+                        <h3>أحدث الإضافات</h3>
+                        <div class="slider-wrapper">
+                            <button class="scroll-btn right-btn" onclick="scrollRow('row-new', 1)"><i class="fas fa-chevron-right"></i></button>
+                            <div class="movie-row" id="row-new">
+                                <!-- سيتم تعبئتها بواسطة JS -->
+                            </div>
+                            <button class="scroll-btn left-btn" onclick="scrollRow('row-new', -1)"><i class="fas fa-chevron-left"></i></button>
+                        </div>
+                    </section>
+                    <section class="movies-slider">
+                        <h3>أفضل 10 أفلام اليوم</h3>
+                        <div class="slider-wrapper">
+                            <button class="scroll-btn right-btn" onclick="scrollRow('row-top10', 1)"><i class="fas fa-chevron-right"></i></button>
+                            <div class="movie-row top-10-row" id="row-top10">
+                                <!-- سيتم تعبئتها بواسطة JS -->
+                            </div>
+                            <button class="scroll-btn left-btn" onclick="scrollRow('row-top10', -1)"><i class="fas fa-chevron-left"></i></button>
+                        </div>
+                    </section>
+                    <section class="movies-slider">
+                        <h3>الأعلى مشاهدة في العراق</h3>
+                        <div class="slider-wrapper">
+                            <button class="scroll-btn right-btn" onclick="scrollRow('row-trending', 1)"><i class="fas fa-chevron-right"></i></button>
+                            <div class="movie-row" id="row-trending">
+                                <!-- سيتم تعبئتها بواسطة JS -->
+                            </div>
+                            <button class="scroll-btn left-btn" onclick="scrollRow('row-trending', -1)"><i class="fas fa-chevron-left"></i></button>
+                        </div>
+                    </section>
+                </main>
+            </div>
+
+            <!-- قسم الأقسام الأخرى (مسلسلات، أفلام، أطفال) -->
+            <div id="view-category" class="page-view hidden">
+                <main class="category-main">
+                    <div class="category-header">
+                        <h2 class="category-title" id="category-title">القسم</h2>
+                        <div class="filter-bar" id="filter-bar">
+                            <div class="custom-select">
+                                <select id="genre-filter">
+                                    <option value="all">كل التصنيفات</option>
+                                    <option value="أكشن">أكشن</option>
+                                    <option value="كوميدي">كوميدي</option>
+                                    <option value="رعب">رعب</option>
+                                    <option value="مغامرة">مغامرة</option>
+                                    <option value="خيال علمي">خيال علمي</option>
+                                    <option value="دراما">دراما</option>
+                                </select>
+                            </div>
+                            <div class="custom-select">
+                                <select id="origin-filter">
+                                    <option value="all">كل الإنتاجات</option>
+                                    <option value="عربي">عربي</option>
+                                    <option value="تركي">تركي</option>
+                                    <option value="اجنبي">أجنبي</option>
+                                    <option value="اسيوي">آسيوي</option>
+                                    <option value="هندي">هندي</option>
+                                </select>
+                            </div>
+                            <div class="custom-select">
+                                <select id="year-filter">
+                                    <option value="all">سنة الإصدار</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
+                                    <option value="old">أقدم من 2020</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-grid" id="category-grid">
+                        <!-- البطاقات ستظهر هنا -->
+                    </div>
+                </main>
+            </div>
+
+            <!-- قسم قائمتي (بطاقات العرض الرئيسية) -->
+            <div id="view-mylist" class="page-view hidden">
+                <main class="category-main">
+                    <h2 class="category-title" style="margin-bottom: 30px;">قوائمي الخاصة</h2>
+                    <div class="custom-list-cards-container">
+                        <div class="custom-list-card card-continue" onclick="openCustomListGrid('continueWatching')">
+                            <i class="fas fa-play-circle"></i>
+                            <h3>أكمل المشاهدة</h3>
+                        </div>
+                        <div class="custom-list-card card-liked" onclick="openCustomListGrid('liked')">
+                            <i class="fas fa-heart"></i>
+                            <h3>أعجبني</h3>
+                        </div>
+                        <div class="custom-list-card card-watchlater" onclick="openCustomListGrid('watchLater')">
+                            <i class="fas fa-clock"></i>
+                            <h3>المشاهدة لاحقاً</h3>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- قسم عرض الأفلام لقائمة مخصصة -->
+            <div id="view-custom-grid" class="page-view hidden">
+                <main class="category-main">
+                    <div class="category-header">
+                        <button class="back-btn" onclick="navigate('mylist')"><i class="fas fa-arrow-right"></i> رجوع</button>
+                        <h2 class="category-title" id="custom-grid-title" style="margin-right: 20px;">القسم</h2>
+                    </div>
+                    <div class="movie-grid" id="custom-grid-container">
+                        <!-- البطاقات ستظهر هنا -->
+                    </div>
+                </main>
+            </div>
+
+
+            <!-- قسم نتائج البحث -->
+            <div id="view-search" class="page-view hidden">
+                <main class="category-main">
+                    <h2 class="category-title">نتائج البحث عن: <span id="search-query-text"></span></h2>
+                    <div class="movie-grid" id="search-grid">
+                        <!-- نتائج البحث ستظهر هنا -->
+                    </div>
+                    <div id="no-results" class="hidden" style="text-align:center; padding: 50px;">
+                        <i class="fas fa-search" style="font-size: 3rem; color: #555; margin-bottom: 20px;"></i>
+                        <h3>لا توجد نتائج مطابقة لبحثك</h3>
+                    </div>
+                </main>
+            </div>
+
+            <!-- قسم الحساب -->
+            <div id="view-account" class="page-view hidden">
+                <main class="category-main" style="padding: 40px; display: flex; flex-direction: column; align-items: center; max-width: 1000px; margin: 0 auto;">
+                    
+                    <!-- Header Profile -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 30px; align-items: center; justify-content: center; margin-bottom: 40px; width: 100%;">
+                        <div class="profile-avatar-container" onclick="openAvatarModal()">
+                            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Felix" alt="User" id="account-profile-img" style="width: 150px; height: 150px; border-radius: 50%; border: 4px solid var(--brand-color);">
+                            <div class="edit-overlay"><i class="fas fa-camera"></i></div>
+                        </div>
+                        <div style="text-align: right; flex: 1; min-width: 250px;">
+                            <div class="name-edit-container">
+                                <h2 id="account-name-display" style="font-size: 2.5rem; margin: 0;">أحمد محمود</h2>
+                                <input type="text" id="account-name-input" class="name-edit-input hidden" value="أحمد محمود">
+                                <button class="edit-name-btn" id="edit-name-btn" onclick="toggleNameEdit()"><i class="fas fa-pen"></i></button>
+                                <button id="save-name-btn" onclick="saveNameEdit()" class="hidden" style="padding: 5px 15px; border:none; border-radius:5px; font-size:1rem; color:white; background:var(--brand-color); cursor:pointer; font-weight:bold;"><i class="fas fa-check"></i> حفظ</button>
+                            </div>
+                            <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 15px;">ahmed@example.com</p>
+                            <button onclick="navigate('settings')" style="padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; color: white; background: rgba(255,255,255,0.1); transition: 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'"><i class="fas fa-cog"></i> إعدادات الحساب</button>
+                        </div>
+                        
+                        <div style="background: rgba(255,255,255,0.05); padding: 25px; border-radius: 10px; min-width: 300px; border-right: 4px solid var(--brand-color);">
+                            <h3 style="margin-bottom: 15px; color: white;">تفاصيل الباقة</h3>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="color: var(--text-muted);">الاشتراك الحالي:</span>
+                                <strong>بريميوم 4K</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                                <span style="color: var(--text-muted);">يُجدد في:</span>
+                                <strong style="color: #2ecc71;">25-10-2023</strong>
+                            </div>
+                            <button class="secondary-btn" style="width: 100%; padding: 10px; background: transparent; border: 1px solid var(--text-muted); color: white; border-radius: 5px; cursor: pointer; transition: 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">تغيير الباقة</button>
+                        </div>
+                    </div>
+
+                    <!-- User Activity Sections -->
+                    <div style="width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 40px;">
+                        
+                        <!-- Watch History -->
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 20px; border-radius: 10px;">
+                            <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;"><i class="fas fa-history" style="color: var(--brand-color); margin-left: 10px;"></i> آخر المشاهدات</h3>
+                            <ul style="list-style: none; padding: 0;">
+                                <li style="display: flex; gap: 15px; margin-bottom: 15px; align-items: center;">
+                                    <img src="https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                    <div>
+                                        <h4 style="font-size: 1rem; color: white;">Justice League</h4>
+                                        <span style="font-size: 0.8rem; color: var(--text-muted);">شوهد قبل يومين</span>
+                                    </div>
+                                </li>
+                                <li style="display: flex; gap: 15px; margin-bottom: 15px; align-items: center;">
+                                    <img src="https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                    <div>
+                                        <h4 style="font-size: 1rem; color: white;">Avengers: Infinity War</h4>
+                                        <span style="font-size: 0.8rem; color: var(--text-muted);">شوهد قبل أسبوع</span>
+                                    </div>
+                                </li>
+                                <li style="display: flex; gap: 15px; align-items: center;">
+                                    <img src="https://image.tmdb.org/t/p/w500/rSPw7tgCH9c6NqICZef4kZjFOQ5.jpg" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                    <div>
+                                        <h4 style="font-size: 1rem; color: white;">The Godfather</h4>
+                                        <span style="font-size: 0.8rem; color: var(--text-muted);">شوهد قبل أسبوعين</span>
+                                    </div>
+                                </li>
+                            </ul>
+                            <button onclick="navigate('home')" style="background: none; border: none; color: var(--brand-color); margin-top: 15px; cursor: pointer; font-size: 0.9rem;">عرض السجل الكامل <i class="fas fa-arrow-left"></i></button>
+                        </div>
+
+                        <!-- Billing History -->
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 20px; border-radius: 10px;">
+                            <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;"><i class="fas fa-file-invoice-dollar" style="color: var(--brand-color); margin-left: 10px;"></i> سجل الفواتير</h3>
+                            <ul style="list-style: none; padding: 0;">
+                                <li style="display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center;">
+                                    <div>
+                                        <h4 style="font-size: 1rem; color: white;">بريميوم 4K - شهر</h4>
+                                        <span style="font-size: 0.8rem; color: var(--text-muted);">25-09-2023</span>
+                                    </div>
+                                    <span style="color: #2ecc71; font-weight: bold;">$14.99</span>
+                                </li>
+                                <li style="display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center;">
+                                    <div>
+                                        <h4 style="font-size: 1rem; color: white;">بريميوم 4K - شهر</h4>
+                                        <span style="font-size: 0.8rem; color: var(--text-muted);">25-08-2023</span>
+                                    </div>
+                                    <span style="color: #2ecc71; font-weight: bold;">$14.99</span>
+                                </li>
+                                <li style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <h4 style="font-size: 1rem; color: white;">الأساسية - شهر</h4>
+                                        <span style="font-size: 0.8rem; color: var(--text-muted);">25-07-2023</span>
+                                    </div>
+                                    <span style="color: #2ecc71; font-weight: bold;">$8.99</span>
+                                </li>
+                            </ul>
+                            <button style="background: none; border: none; color: var(--brand-color); margin-top: 15px; cursor: pointer; font-size: 0.9rem;" onclick="showToast('تم إرسال الفواتير إلى بريدك الإلكتروني', 'info')">تحميل كشف الحساب <i class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div style="width: 100%; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                        <button class="secondary-btn" onclick="navigate('mylist')" style="padding: 15px 30px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: white; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; transition: 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'"><i class="fas fa-list"></i> قائمتي المفضلة</button>
+                        <button class="secondary-btn" onclick="navigate('help')" style="padding: 15px 30px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: white; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; transition: 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'"><i class="fas fa-headset"></i> الدعم الفني</button>
+                        <button class="secondary-btn" style="padding: 15px 30px; background: rgba(229,9,20,0.1); border: 1px solid rgba(229,9,20,0.3); color: var(--brand-color); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; transition: 0.3s;" onmouseover="this.style.background='rgba(229,9,20,0.2)'" onmouseout="this.style.background='rgba(229,9,20,0.1)'" onclick="document.getElementById('logout-btn').click()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+                    </div>
+
+                </main>
+            </div>
+
+            <!-- قسم الإعدادات -->
+            <div id="view-settings" class="page-view hidden">
+                <main class="category-main" style="padding: 120px 40px 40px; max-width: 600px; margin: 0 auto;">
+                    <h2 style="font-size: 2rem; margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">إعدادات الحساب</h2>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 10px; color: var(--text-muted);">اللغة المفضلة</label>
+                        <select id="settings-lang" class="filter-select" style="width: 100%; padding: 10px; border-radius: 5px; background: #222; border: 1px solid #333; color: white;">
+                            <option value="ar">العربية</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 10px; color: var(--text-muted);">تغيير كلمة المرور</label>
+                        <input type="password" id="settings-pass-new" placeholder="كلمة المرور الجديدة" style="width: 100%; padding: 10px; border-radius: 5px; background: #222; border: 1px solid #333; color: white; margin-bottom: 10px;">
+                        <input type="password" id="settings-pass-confirm" placeholder="تأكيد كلمة المرور" style="width: 100%; padding: 10px; border-radius: 5px; background: #222; border: 1px solid #333; color: white;">
+                    </div>
+                    
+                    <div style="margin-bottom: 30px; display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="settings-email-notif" checked style="width: 20px; height: 20px; accent-color: var(--brand-color);">
+                        <label for="settings-email-notif">استلام إشعارات عبر البريد الإلكتروني</label>
+                    </div>
+                    
+                    <button onclick="saveSettings()" style="width: 100%; padding: 12px; border: none; border-radius: 5px; font-size: 1.1rem; cursor: pointer; color: white; background: var(--brand-color); font-weight: bold; transition: 0.3s;" onmouseover="this.style.background='#c40812'" onmouseout="this.style.background='var(--brand-color)'">حفظ التغييرات</button>
+                </main>
+            </div>
+
+            <!-- قسم مركز المساعدة -->
+            <div id="view-help" class="page-view hidden">
+                <main class="category-main" style="padding: 40px; max-width: 800px; margin: 0 auto;">
+                    <h2 style="font-size: 2rem; margin-bottom: 30px; text-align: center; color: var(--brand-color);">مركز المساعدة والدعم</h2>
+                    
+                    <div style="background: rgba(255,255,255,0.05); padding: 25px; border-radius: 10px; margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 10px; color: white;"><i class="fas fa-question-circle"></i> كيف يمكنني تغيير جودة الفيديو؟</h3>
+                        <p style="color: var(--text-muted); line-height: 1.6;">يمكنك تغيير جودة الفيديو أثناء المشاهدة من خلال الضغط على أيقونة الترس (الإعدادات) في مشغل الفيديو واختيار الجودة المناسبة لسرعة الإنترنت لديك.</p>
+                    </div>
+                    
+                    <div style="background: rgba(255,255,255,0.05); padding: 25px; border-radius: 10px; margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 10px; color: white;"><i class="fas fa-credit-card"></i> ما هي طرق الدفع المتاحة؟</h3>
+                        <p style="color: var(--text-muted); line-height: 1.6;">ندعم الدفع عبر بطاقات ماستر كارد، فيزا، زين كاش، بالإضافة إلى الدفع المباشر عن طريق شبكات الاتصال المحلية.</p>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 40px;">
+                        <p style="margin-bottom: 15px;">لم تجد ما تبحث عنه؟ تواصل معنا مباشرة</p>
+                        <button onclick="showToast('جاري تحويلك إلى خدمة العملاء...', 'info')" style="padding: 12px 25px; border: none; border-radius: 5px; font-size: 1.1rem; cursor: pointer; color: white; background: #25D366; font-weight: bold; transition: 0.3s;" onmouseover="this.style.background='#128C7E'" onmouseout="this.style.background='#25D366'"><i class="fab fa-whatsapp"></i> تواصل عبر واتساب</button>
+                    </div>
+                </main>
+            </div>
+
+        </div>
+        
+        <!-- التذييل (Footer) -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h2 class="logo">Iraq <span>Vision</span></h2>
+                    <p>المنصة الأولى للأفلام والمسلسلات في العراق. استمتع بأفضل المحتوى الحصري.</p>
+                </div>
+                <div class="footer-links">
+                    <ul>
+                        <li><a href="#" onclick="navigate('home')">الرئيسية</a></li>
+                        <li><a href="#">الأسئلة الشائعة</a></li>
+                        <li><a href="#">تواصل معنا</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#">شروط الاستخدام</a></li>
+                        <li><a href="#">سياسة الخصوصية</a></li>
+                        <li><a href="#">مركز المساعدة</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Iraq Vision. جميع الحقوق محفوظة.</p>
+            </div>
+        </footer>
+
+        <!-- نافذة مشغل الفيديو (Real Player UI) -->
+        <div id="video-modal" class="modal hidden">
+            <div class="modal-content video-content">
+                <div class="video-header">
+                    <h3 id="player-title">يتم التشغيل...</h3>
+                    <span class="close-btn video-close" onclick="closeVideo()">&times;</span>
+                </div>
+                <div class="video-player-container" style="width: 100%; height: 100%;">
+                    <video
+                        id="my-video"
+                        class="video-js vjs-theme-fantasy vjs-big-play-centered"
+                        controls
+                        preload="auto"
+                        width="100%"
+                        height="100%"
+                        poster="https://images.unsplash.com/photo-1536440136628-849c177e76a1?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=720&w=1280"
+                        data-setup='{"fluid": true}'
+                    >
+                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+                        <track kind="captions" src="subtitles.vtt" srclang="ar" label="العربية" default>
+                        <p class="vjs-no-js">
+                            To view this video please enable JavaScript, and consider upgrading to a
+                            web browser that
+                            <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                        </p>
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <!-- نافذة تفاصيل الفيلم (Movie Details Modal) -->
+        <div id="movie-details-modal" class="modal hidden">
+            <div class="modal-content details-content">
+                <span class="close-btn details-close-btn" onclick="closeMovieDetails()">&times;</span>
+                <div class="details-hero" id="details-hero">
+                    <video id="details-trailer" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1;"></video>
+                </div>
+                <div class="details-info">
+                    <h2 id="details-title">اسم الفيلم</h2>
+                    <div class="details-meta">
+                        <span class="match-score">98% تطابق</span>
+                        <span id="details-year">2024</span>
+                        <span class="age-rating" id="details-rating">+16</span>
+                        <span class="duration">ساعتان و 15 دقيقة</span>
+                    </div>
+                    <p id="details-desc" class="details-desc">وصف الفيلم يظهر هنا.</p>
+                    <div class="hero-buttons custom-actions">
+                        <button class="btn-primary" onclick="closeMovieDetails(); playVideo();"><i class="fas fa-play"></i> تشغيل</button>
+                        <div class="action-circles">
+                            <button class="action-circle-btn" id="btn-continue-watching" onclick="toggleContinueWatching(this)" title="أكمل المشاهدة">
+                                <i class="fas fa-history"></i>
+                            </button>
+                            <button class="action-circle-btn" id="btn-like" onclick="toggleLike(this)" title="أعجبني">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            <button class="action-circle-btn" id="btn-watch-later" onclick="toggleWatchLater(this)" title="المشاهدة لاحقاً">
+                                <i class="fas fa-clock"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="details-crew" style="margin-top: 20px; color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+                        <p><strong style="color: white;">المخرج:</strong> <span id="details-director"></span></p>
+                        <p><strong style="color: white;">طاقم العمل:</strong> <span id="details-cast"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" style="position: fixed; bottom: 20px; left: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+
+    <!-- Avatar Selection Modal -->
+    <div class="modal-overlay" id="avatar-modal">
+        <div class="modal-content" style="text-align: center;">
+            <button class="close-modal-btn" onclick="closeAvatarModal()"><i class="fas fa-times"></i></button>
+            <h2 style="margin-bottom: 10px;">تغيير صورة البروفايل</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">اختر شخصيتك الكارتونية المفضلة</p>
+            <div class="avatars-grid">
+                <!-- Males -->
+                <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Felix" class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/adventurer/svg?seed=Felix')">
+                <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Leo" class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/adventurer/svg?seed=Leo')">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Milo" class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/avataaars/svg?seed=Milo')">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jasper" class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jasper')">
+                <!-- Females -->
+                <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Bella" class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/adventurer/svg?seed=Bella')">
+                <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Lily" class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/adventurer/svg?seed=Lily')">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mia" class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mia')">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Luna" class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna')">
+            </div>
+            <button onclick="saveAvatar()" style="margin-top: 30px; padding: 10px 30px; border: none; border-radius: 5px; cursor: pointer; color: white; background: var(--brand-color); font-size: 1.1rem; font-weight: bold; transition: 0.3s;" onmouseover="this.style.background='#c40812'" onmouseout="this.style.background='var(--brand-color)'">تأكيد الاختيار</button>
+        </div>
+    </div>
+
+    <!-- Auth Alert Modal -->
+    <div class="modal-overlay" id="auth-alert-modal" style="z-index: 10000; align-items: center; justify-content: center;">
+        <div class="modal-content" style="text-align: center; max-width: 400px; padding: 40px; border-radius: 15px; background: rgba(20,20,20,0.95); border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; align-items: center;">
+            <div id="auth-alert-icon" style="font-size: 5rem; margin-bottom: 20px;"></div>
+            <h2 id="auth-alert-text" style="font-size: 1.5rem; color: white;"></h2>
+        </div>
+    </div>
+
+    <!-- Video.js script -->
+    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
